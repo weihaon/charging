@@ -82,9 +82,9 @@ public class server implements Runnable{
         //把时间转换成字符串
         // 定义日期时间格式化器
         // 创建日期时间格式化器
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
         // 将修改后的日期时间转换为字符串
-        String modifiedDateTimeStr = modifiedDateTime1.format(formatter)+".000";
+        String modifiedDateTimeStr = modifiedDateTime1.format(formatter)+".000000Z";
 
 
         return modifiedDateTimeStr;
