@@ -11,4 +11,6 @@ public class ChargeStatusResponse {
     public String status;
     public float totalAmount;
     public boolean waitingArea;
+    public double currentAmount= 0;
+    public double  currentFee= 0;
 }
