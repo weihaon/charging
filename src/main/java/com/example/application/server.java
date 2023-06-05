@@ -78,7 +78,7 @@ public class server implements Runnable{
     {
         //把字符串转换数字
         int time1=Integer.parseInt(time);
-        LocalDateTime modifiedDateTime1 = modifiedDateTime.plusMinutes(time1);
+        LocalDateTime modifiedDateTime1 = modifiedDateTime.plusSeconds(time1);
         //把时间转换成字符串
         // 定义日期时间格式化器
         // 创建日期时间格式化器
@@ -95,7 +95,7 @@ public class server implements Runnable{
         //把字符串转换数字
         int time1=Integer.parseInt(time);
 
-        LocalDateTime modifiedDateTime1 = modifiedDateTime.plusMinutes(time1);
+        LocalDateTime modifiedDateTime1 = modifiedDateTime.plusSeconds(time1);
         //把时间转换成字符串
         // 定义日期时间格式化器
         // 创建日期时间格式化器
@@ -802,7 +802,7 @@ public class server implements Runnable{
     }
 }
 class Time implements Runnable {
-    int ms=5000;//每多少毫秒模拟一分钟
+    int ms=50;//每多少毫秒模拟一秒
 
     @Override
     public void run() {
@@ -811,7 +811,7 @@ class Time implements Runnable {
             while(true) {
                 Thread.sleep(ms);
                 server.time++;//时间加了一分钟
-                if(server.time%10==0)
+                if(server.time%200==0)
                 {
                     //打印tables
                     System.out.println("时间表(10s刷新一次):"+"目前时间: "+server.time+" "+server.getTime(String.valueOf(server.time)));
