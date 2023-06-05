@@ -230,14 +230,14 @@ public class DatabaseAccess {
     {
         String sql="SELECT * FROM bill WHERE userId=?";
         List<Map<String,Object>> r=jdbcTemplate.queryForList(sql,userId);
+        ArrayList<ChargeBill> BILLS=new ArrayList<>();
         if(r==null || r.isEmpty())
         {
-            return null;
+            return BILLS;
         }
         else
         {
             DecimalFormat df=new DecimalFormat("0.0");
-            ArrayList<ChargeBill> BILLS=new ArrayList<>();
             for(int i=0;i<r.size();i++) {
                 ChargeBill myBill = new ChargeBill();
                 myBill.chargeAmount = Double.parseDouble((String) r.get(i).get("chargeAmount"));

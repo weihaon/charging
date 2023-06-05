@@ -190,15 +190,17 @@ public class Others {
         GenericResponse result= new GenericResponse();
         result.code=0;
         result.message="sccuess";
-
-
         json = gson.toJson(result);
-
         return json;
     }
-   @GetMapping("/time")
+    @GetMapping("/time")
     public String getTime() {
-        return server.getTime(String.valueOf(server.time));
+        Gson gson = new Gson();
+        String json="";
+        time time=new time();
+        time.time=server.getTime(String.valueOf(server.time));
+        json=gson.toJson(time);
+        return json;
     }
     @PostMapping("/user/login")
     public String login(@RequestBody UserLoginRequest account) throws InterruptedException {
