@@ -7,6 +7,8 @@ import Function.function;
 import javax.servlet.http.HttpServletResponse;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
@@ -73,7 +75,7 @@ public class server implements Runnable{
     public static volatile ArrayList<Integer>[] SlowQueue=new ArrayList[TrickleChargingPileNum];//慢充队列
     //初始化时间
     static LocalDateTime modifiedDateTime;
-    static LocalDateTime Day;
+    static long stamp;
     public static String getTime(String time)
     {
         //把字符串转换数字
@@ -110,13 +112,13 @@ public class server implements Runnable{
     public static void main(String[] args) throws InterruptedException {
         //获得当前时间
         LocalDateTime currentDateTime = LocalDateTime.now();
+        //准确到秒
+        modifiedDateTime = currentDateTime.withNano(0);
+        // 把currentDateTime转化为时间戳,毫秒为单位
+        stamp = System.currentTimeMillis();
 
-        // 将秒钟部分设置为0
-        modifiedDateTime = currentDateTime.withSecond(0);
-        // 将毫秒部分设置为0
-        modifiedDateTime = modifiedDateTime.withNano(0);
-        //获得当前时间
-        Day=LocalDateTime.now();
+        System.out.println("当前时间戳为：" + stamp);
+
 
 
         new Thread(new Time()).start();

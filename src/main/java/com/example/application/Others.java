@@ -198,7 +198,7 @@ public class Others {
         Gson gson = new Gson();
         String json="";
         time time=new time();
-        time.time=server.getTime(String.valueOf(server.time));
+        time.time=server.stamp+(long)server.time* 1000;
         json=gson.toJson(time);
         return json;
     }
