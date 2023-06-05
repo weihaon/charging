@@ -98,12 +98,15 @@ public class function {
     {
         bill.chargeEndTime=String.valueOf(time);
         bill.created_at =bill.chargeStartTime;
-        if(fast) bill.chargeAmount=30*(Double.valueOf(bill.chargeEndTime)-Double.valueOf(bill.chargeStartTime))/60;
-        else bill.chargeAmount=15*(Double.valueOf(bill.chargeEndTime)-Double.valueOf(bill.chargeStartTime))/60;
+        if(fast) bill.chargeAmount=30*(Double.valueOf(bill.chargeEndTime)-Double.valueOf(bill.chargeStartTime))/3600;
+        else bill.chargeAmount=7*(Double.valueOf(bill.chargeEndTime)-Double.valueOf(bill.chargeStartTime))/3600;
         bill.serviceFee=0.8*bill.chargeAmount;
         bill.chargeFee=CountFee(Double.valueOf(bill.chargeStartTime),Double.valueOf(bill.chargeEndTime),fast);
-        DecimalFormat df=new DecimalFormat("0.0");
+        DecimalFormat df=new DecimalFormat("0.00");
+        bill.chargeFee= Double.parseDouble(df.format(bill.chargeFee));
+        bill.serviceFee= Double.parseDouble(df.format(bill.serviceFee));
         bill.totalFee=Double.valueOf(df.format(bill.chargeFee+bill.serviceFee));
+        bill.chargeAmount=Double.valueOf(df.format(bill.chargeAmount));
         databaseAccess.billWriteback(bill);
     }
     public static void createBillByUserId(int userId,int time,boolean fast)//故障时生成的详单
@@ -112,10 +115,15 @@ public class function {
         mybill=databaseAccess.billReadByUserId(userId);
         mybill.chargeEndTime= String.valueOf(time);
         mybill.chargeFee=CountFee(Double.valueOf(mybill.chargeStartTime),Double.valueOf(mybill.chargeEndTime),fast);
-        if(fast) mybill.chargeAmount=30*(Double.valueOf(mybill.chargeEndTime)-Double.valueOf(mybill.chargeStartTime))/60;
-        else mybill.chargeAmount=7*(Double.valueOf(mybill.chargeEndTime)-Double.valueOf(mybill.chargeStartTime))/60;
+        if(fast) mybill.chargeAmount=30*(Double.valueOf(mybill.chargeEndTime)-Double.valueOf(mybill.chargeStartTime))/3600;
+        else mybill.chargeAmount=7*(Double.valueOf(mybill.chargeEndTime)-Double.valueOf(mybill.chargeStartTime))/3600;
+        DecimalFormat df=new DecimalFormat("0.00");
         mybill.serviceFee=0.8*mybill.chargeAmount;
         mybill.totalFee=mybill.chargeFee+mybill.serviceFee;
+        mybill.chargeFee= Double.parseDouble(df.format(mybill.chargeFee));
+        mybill.serviceFee= Double.parseDouble(df.format(mybill.serviceFee));
+        mybill.totalFee=Double.valueOf(df.format(mybill.chargeFee+mybill.serviceFee));
+        mybill.chargeAmount=Double.valueOf(df.format(mybill.chargeAmount));
         databaseAccess.billWriteback(mybill);
         chargeBills.add(mybill);
     }
@@ -292,10 +300,10 @@ public class function {
         double countfee;
         if(fast) dayFee=504;
         else dayFee=117.6;
-        int days=(int)(endtime-starttime)/1440;
+        int days=(int)(endtime-starttime)/86400;
         double fee1=days*dayFee;
         double fee2=0;
-        endtime-=days*1440;
+        endtime-=days*86400;
         for(double i=starttime;Double.compare(i,endtime)<0;i++)
         {
             if(Double.compare(i,420.0)<0)
@@ -333,6 +341,7 @@ public class function {
                 else fee2+=Double.valueOf(df.format(0.4*7/60));
             }
         }
+        fee2=fee2/60.0;
         return fee1+fee2;
     }
 

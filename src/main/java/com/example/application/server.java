@@ -535,8 +535,8 @@ public class server implements Runnable{
                     databaseAccess.chargestatusWriteback(UserChargeStatus.get(event.get(0).usrid));
                     //更新充电桩等候服务信息
                     databaseAccess.waitStatusDelete(event.get(0).usrid);
-                    if(server.chargeRequests.get(event.get(0).usrid).fast) temp=60*server.chargeRequests.get(event.get(0).usrid).amount/30;
-                    else temp=60.0*server.chargeRequests.get(event.get(0).usrid).amount/7;
+                    if(server.chargeRequests.get(event.get(0).usrid).fast) temp=3600.0*server.chargeRequests.get(event.get(0).usrid).amount/30;
+                    else temp=3600.0*server.chargeRequests.get(event.get(0).usrid).amount/7;
                     table newtable=new table();
                     newtable.type=1;
                     newtable.time=(int)(server.time+temp);

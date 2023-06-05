@@ -345,11 +345,11 @@ public class Charge {
                 result = databaseAccess.billReadByUserId(myuser.id);
                 result.chargeEndTime=String.valueOf(time-1);
                 result.created_at =result.chargeStartTime;
-                if(UserChargeStatus.get(myuser.id).fast) result.chargeAmount=30*(Double.valueOf(result.chargeEndTime)-Double.valueOf(result.chargeStartTime))/60;
-                else result.chargeAmount=15*(Double.valueOf(result.chargeEndTime)-Double.valueOf(result.chargeStartTime))/60;
+                if(UserChargeStatus.get(myuser.id).fast) result.chargeAmount=30*(Double.valueOf(result.chargeEndTime)-Double.valueOf(result.chargeStartTime))/3600;
+                else result.chargeAmount=15*(Double.valueOf(result.chargeEndTime)-Double.valueOf(result.chargeStartTime))/3600;
                 result.serviceFee=0.8*result.chargeAmount;
                 result.chargeFee=CountFee(Double.valueOf(result.chargeStartTime),Double.valueOf(result.chargeEndTime),UserChargeStatus.get(myuser.id).fast);
-                DecimalFormat df=new DecimalFormat("0.0");
+                DecimalFormat df=new DecimalFormat("0.00");
                 result.totalFee=Double.valueOf(df.format(result.chargeFee+result.serviceFee));
                 //向结束充电队列里添加充电桩
                 server.endCharge.add(result.pileId);
