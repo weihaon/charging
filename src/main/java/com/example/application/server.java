@@ -264,11 +264,7 @@ public class server implements Runnable{
                                     WaitQueue.add(0, ErrorQueue.get(j));
 
                                 }
-                                    while(WaitQueue.size()>WaitingAreaSize) {
-                                       //删除等候区最后一个
-                                        WaitQueue.remove(WaitQueue.size()-1);
 
-                                    }
                                 int m=ErrorQueue.size();
                                 for(int j=count;j<m;j++){
                                     ErrorQueue.remove(count);
@@ -380,20 +376,10 @@ public class server implements Runnable{
                                         flag=true;
 
                                     }
-                                    //count为1,error为2
-                                    if(ErrorQueue.size()>count)//假如有充电桩处于故障状态
-                                    {
 
-
-                                        while(WaitQueue.size()>WaitingAreaSize) {
-                                            //删除等候区最后一个
-                                            WaitQueue.remove(WaitQueue.size()-1);
-
-                                        }
-                                    }
                                 }
                             }
-                            if(ErrorQueue.size()==0) continue;
+
                             if(!flag1)//所有工作的充电桩都满了
                             {
 
@@ -409,11 +395,6 @@ public class server implements Runnable{
                                     WaitQueue.add(0, ErrorQueue.get(j));
 
                                 }
-                                    while(WaitQueue.size()>WaitingAreaSize) {
-                                        //删除等候区最后一个
-                                        WaitQueue.remove(WaitQueue.size()-1);
-
-                                    }
                                 int m=ErrorQueue.size();
                                 for(int j=count;j<m;j++){
                                     ErrorQueue.remove(count);
