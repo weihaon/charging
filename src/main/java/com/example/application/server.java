@@ -208,11 +208,14 @@ public class server implements Runnable{
         while(true){
             //执行任务
             synchronized (server.lock){
-                if (ErrorQueue.size() > 0)
+                while (ErrorQueue.size() > 0)
                 {
+                    System.out.println("ErrorQueue.size():"+ErrorQueue.size());
+
                     //查到充电方式
                     boolean fast=chargeRequests.get(ErrorQueue.get(0)).fast;
                     boolean flag=false;
+                    int count=0;
 
                     if(fast)//快充模式
                     {
@@ -220,13 +223,16 @@ public class server implements Runnable{
                         {
                             if(FastPiles.get(i).status!=0)//假如有充电桩处于运行状态
                             {
-                                flag=true;
+                                flag = true;
                                 break;
                             }
+                            //计算出剩余的充电位count;
+
                         }
                         if(!flag) {System.out.println("Error");}//所有快充充电桩都处于故障状态，无法进行快充
                         else
                         {
+
                             index++;
                             boolean flag1=false;
                             for(int i=0;i<FastChargingPileNum;i++)
@@ -234,27 +240,42 @@ public class server implements Runnable{
                                 if(FastQueue[i].size()<ChargingQueueLen&&FastPiles.get(i).status==1)//看是否有充电桩是工作状态并且是空闲的
                                 {
                                     flag1=true;
-                                    break;
                                 }
+
+
                             }
+
+
+
                             if(!flag1)//所有工作的充电桩都满了
                             {
 
+                                for(int j=ErrorQueue.size()-1;j>=count;j--)
+                                {
                                     String wait = "F" + String.valueOf(index);
                                     //更新用户状态信息
-                                    UserChargeStatus.get(ErrorQueue.get(0)).waitingArea=true;
-                                    UserChargeStatus.get(ErrorQueue.get(0)).status="等候区排队中";
-                                    UserChargeStatus.get(ErrorQueue.get(0)).chargingArea=false;
-                                    UserChargeStatus.get(ErrorQueue.get(0)).position=WaitQueue.size();
+                                    UserChargeStatus.get(ErrorQueue.get(j)).waitingArea=true;
+                                    UserChargeStatus.get(ErrorQueue.get(j)).status="等候区排队中";
+                                    UserChargeStatus.get(ErrorQueue.get(j)).chargingArea=false;
+                                    UserChargeStatus.get(ErrorQueue.get(j)).position=WaitQueue.size();
                                     databaseAccess.chargestatusWriteback(UserChargeStatus.get(ErrorQueue.get(0)));
-                                    Number.put(ErrorQueue.get(0), wait);
+                                    Number.put(ErrorQueue.get(j), wait);
                                     //ErrorQueue.get(0)放到WaitQueue第一个
-                                    WaitQueue.add(0, ErrorQueue.get(0));
+                                    WaitQueue.add(0, ErrorQueue.get(j));
+
+                                }
                                     while(WaitQueue.size()>WaitingAreaSize) {
                                        //删除等候区最后一个
                                         WaitQueue.remove(WaitQueue.size()-1);
 
                                     }
+                                int m=ErrorQueue.size();
+                                for(int j=count;j<m;j++){
+                                    ErrorQueue.remove(count);
+                                    //删除count位
+
+                                }
+                                break;
 
                             }
                             else
@@ -340,6 +361,7 @@ public class server implements Runnable{
                             {
                                 flag=true;
                                 break;
+
                             }
                         }
                         if(!flag) {System.out.println("Error");}//所有快充充电桩都处于故障状态，无法进行快充
@@ -351,27 +373,54 @@ public class server implements Runnable{
                             {
                                 if(SlowQueue[i].size()<ChargingQueueLen&&SlowPiles.get(i).status==1)//看是否有充电桩是工作状态并且是空闲的
                                 {
+                                    System.out.println();
                                     flag1=true;
-                                    break;
+                                    if(SlowPiles.get(i).status!=0)//假如有充电桩处于运行状态
+                                    {
+                                        flag=true;
+
+                                    }
+                                    //count为1,error为2
+                                    if(ErrorQueue.size()>count)//假如有充电桩处于故障状态
+                                    {
+
+
+                                        while(WaitQueue.size()>WaitingAreaSize) {
+                                            //删除等候区最后一个
+                                            WaitQueue.remove(WaitQueue.size()-1);
+
+                                        }
+                                    }
                                 }
                             }
+                            if(ErrorQueue.size()==0) continue;
                             if(!flag1)//所有工作的充电桩都满了
                             {
 
+                                for(int j=ErrorQueue.size()-1;j>=count;j--)
+                                {
                                     String wait = "T" + String.valueOf(index);
-                                    UserChargeStatus.get(ErrorQueue.get(0)).waitingArea=true;
-                                    UserChargeStatus.get(ErrorQueue.get(0)).status="等候区排队中";
-                                    UserChargeStatus.get(ErrorQueue.get(0)).chargingArea=false;
-                                    UserChargeStatus.get(ErrorQueue.get(0)).position=WaitQueue.size();
-                                    databaseAccess.chargestatusWriteback(UserChargeStatus.get(ErrorQueue.get(0)));
-                                    Number.put(ErrorQueue.get(0), wait);
-                                    Number.put(ErrorQueue.get(0), wait);
-                                    WaitQueue.add(0, ErrorQueue.get(0));
+                                    UserChargeStatus.get(ErrorQueue.get(j)).waitingArea=true;
+                                    UserChargeStatus.get(ErrorQueue.get(j)).status="等候区排队中";
+                                    UserChargeStatus.get(ErrorQueue.get(j)).chargingArea=false;
+                                    UserChargeStatus.get(ErrorQueue.get(j)).position=WaitQueue.size();
+                                    databaseAccess.chargestatusWriteback(UserChargeStatus.get(ErrorQueue.get(j)));
+                                    Number.put(ErrorQueue.get(j), wait);
+                                    WaitQueue.add(0, ErrorQueue.get(j));
+
+                                }
                                     while(WaitQueue.size()>WaitingAreaSize) {
                                         //删除等候区最后一个
                                         WaitQueue.remove(WaitQueue.size()-1);
 
                                     }
+                                int m=ErrorQueue.size();
+                                for(int j=count;j<m;j++){
+                                    ErrorQueue.remove(count);
+                                    //删除count位
+
+                                }
+                                break;
 
                             }
                             else

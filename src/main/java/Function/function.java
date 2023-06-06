@@ -196,7 +196,7 @@ public class function {
                     chargeRequests.get(FastQueue[id].get(0)).amount -= newbill.chargeAmount;
                     //将剩下的假如差错队列
                     for (int j = 0; j < FastQueue[id].size(); j++) {
-                        ErrorQueue.add(0,FastQueue[id].get(j));
+                        ErrorQueue.add(FastQueue[id].get(j));
                         for (int k = 0; k < tables.size(); k++) {
                             if (tables.get(k).userId == FastQueue[id].get(j)) {
                                 tables.remove(k);
@@ -206,28 +206,31 @@ public class function {
                     FastQueue[id].clear();
                 }
             } else {
-                if (SlowQueue[id].size() > 0) {
+                if (SlowQueue[id-FastChargingPileNum].size() > 0) {
                     SlowPiles.get(id - FastChargingPileNum).status = status;
-                    function.createBillByUserId(SlowQueue[id].get(0), server.time, false);
+                    function.createBillByUserId(SlowQueue[id-FastChargingPileNum].get(0), server.time, false);
                     //更新充电请求
                     ChargeBill newbill = new ChargeBill();
-                    newbill = databaseAccess.billReadByUserId(FastQueue[id].get(0));
-                    chargeRequests.get(SlowQueue[id].get(0)).amount -= newbill.chargeAmount;
-                    for (int j = 0; j < SlowQueue[id].size(); j++) {
-                        ErrorQueue.add(0, SlowQueue[id].get(j));
+                    newbill = databaseAccess.billReadByUserId(SlowQueue[id-FastChargingPileNum].get(0));
+                    chargeRequests.get(SlowQueue[id-FastChargingPileNum].get(0)).amount -= newbill.chargeAmount;
+                    for (int j = 0; j < SlowQueue[id-FastChargingPileNum].size(); j++) {
+                        ErrorQueue.add(SlowQueue[id-FastChargingPileNum].get(j));
                         for (int k = 0; k < tables.size(); k++) {
-                            if (tables.get(k).userId == FastQueue[id].get(j)) {
+                            if (tables.get(k).userId == SlowQueue[id-FastChargingPileNum].get(j)) {
                                 tables.remove(k);
                             }
                         }
-                        SlowQueue[id].clear();
+
                     }
+                    SlowQueue[id-FastChargingPileNum].clear();
                 }
             }
-        } else {
-            FastPiles.get(id).status = status;
+        }
+        else {
+
             //将所有同类型的车分配给差错队列重新调度
             if (id < FastChargingPileNum) {
+                FastPiles.get(id).status = status;
                 for (int i = 0; i < FastChargingPileNum; i++) {
                     if (FastQueue[i].size() > 1) {
                         Iterator<Integer> it = FastQueue[i].iterator();
@@ -240,6 +243,7 @@ public class function {
                     }
                 }
             } else {
+                SlowPiles.get(id - FastChargingPileNum).status = status;
                 for (int i = 0; i < TrickleChargingPileNum; i++) {
                     if (SlowQueue[i].size() > 1) {
                         Iterator<Integer> it = SlowQueue[i].iterator();

@@ -115,7 +115,7 @@ public class DatabaseAccess {
             ChargePile myChargepile = new ChargePile();
             myChargepile.created_at=(String)r.get(0).get("createdAt");
             myChargepile.deleted_at=(String)r.get(0).get("deletedAt");
-            if(Objects.equals((String) r.get(0).get("fast"), "true")) myChargepile.fast=true;
+            if(Objects.equals((String) r.get(0).get("fast"), "1")) myChargepile.fast=true;
             else myChargepile.fast=false;
             myChargepile.id=(int) r.get(0).get("id");
             myChargepile.status=(int)r.get(0).get("status");

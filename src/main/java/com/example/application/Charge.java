@@ -38,19 +38,27 @@ public class Charge {
         String json="";
         //判断是否在充电
         if(response !=null){
-            if(response.fast)
-            {
-                response.currentFee=function.CountFee(Double.parseDouble(mybill.chargeStartTime),server.time,true);
-                response.currentAmount=30*(server.time-Double.parseDouble(mybill.chargeStartTime))/3600;
+            if(mybill==null){
+                if(response.fast)
+                {
+                    response.currentFee=function.CountFee(Double.parseDouble(mybill.chargeStartTime),server.time,true);
+                    response.currentAmount=30*(server.time-Double.parseDouble(mybill.chargeStartTime))/3600;
+                }
+                else
+                {
+                    response.currentFee=function.CountFee(Double.parseDouble(mybill.chargeStartTime),server.time,false);
+                    response.currentAmount=7*(server.time-Double.parseDouble(mybill.chargeStartTime))/3600;
+                }
+                DecimalFormat df=new DecimalFormat("0.00");
+                response.currentFee=Double.valueOf(df.format(response.currentFee));
+                response.currentAmount=Double.valueOf((df.format(response.currentAmount)));
             }
-            else
-            {
-                response.currentFee=function.CountFee(Double.parseDouble(mybill.chargeStartTime),server.time,false);
-                response.currentAmount=7*(server.time-Double.parseDouble(mybill.chargeStartTime))/3600;
+            else{
+                response.currentFee=0;
+                response.currentAmount=0;
             }
-            DecimalFormat df=new DecimalFormat("0.00");
-            response.currentFee=Double.valueOf(df.format(response.currentFee));
-            response.currentAmount=Double.valueOf((df.format(response.currentAmount)));
+
+
             json = gson.toJson(response);
         }
         else{
