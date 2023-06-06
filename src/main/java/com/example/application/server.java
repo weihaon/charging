@@ -194,6 +194,7 @@ public class server implements Runnable{
 
 
         //启动线程
+        new Thread(new info()).start();
         new Thread(new server()).start();
         new Thread(new Schedule()).start();
 
@@ -803,6 +804,43 @@ public class server implements Runnable{
 
     }
 }
+class info implements Runnable{
+    int flag=0;
+
+    @Override
+    public void run() {
+        while(true) {
+            if (flag != server.time && server.time % 200 == 0 ) {
+                flag = server.time;
+                //打印tables
+                System.out.println("时间表(10s刷新一次):" + "目前时间: " + server.time + " " + server.getTime(String.valueOf(server.time)));
+                for (int i = 0; i < server.tables.size(); i++) {
+                    System.out.println(" 预期时间" + server.tables.get(i).time + " 种类:" + server.tables.get(i).type + " 充电桩:" + server.tables.get(i).pile + " 用户:" + server.tables.get(i).userId);
+                }
+                //打印fastqueue和slowqueue
+                System.out.println("充电桩状态:");
+                for (int i = 0; i < server.FastChargingPileNum; i++) {
+                    System.out.print("快充" + i + ":");
+                    System.out.println(server.FastQueue[i]);
+                }
+                for (int i = 0; i < server.TrickleChargingPileNum; i++) {
+                    System.out.print("慢充" + i + ":");
+                    System.out.println(server.SlowQueue[i]);
+                }
+
+
+                if (WaitQueue.size() > 0) {
+                    System.out.print("等候区:");
+                    System.out.println(WaitQueue + " ");
+                }
+                if (ErrorQueue.size() > 0) {
+                    System.out.print("差错区:");
+                    System.out.println(ErrorQueue);
+                }
+            }
+        }
+    }
+}
 class Time implements Runnable {
     int ms=50;//每多少毫秒模拟一秒
 
@@ -813,38 +851,7 @@ class Time implements Runnable {
             while(true) {
                 Thread.sleep(ms);
                 server.time++;//时间加了一分钟
-                if(server.time%200==0)
-                {
-                    //打印tables
-                    System.out.println("时间表(10s刷新一次):"+"目前时间: "+server.time+" "+server.getTime(String.valueOf(server.time)));
-                    for(int i=0;i<server.tables.size();i++)
-                    {
-                        System.out.println(" 预期时间"+server.tables.get(i).time+" 种类:"+server.tables.get(i).type+" 充电桩:"+server.tables.get(i).pile+" 用户:"+server.tables.get(i).userId);
-                    }
-                    //打印fastqueue和slowqueue
-                    System.out.println("充电桩状态:");
-                    for(int i=0;i<server.FastChargingPileNum;i++)
-                    {
-                        System.out.print("快充"+i+":");
-                        System.out.println(server.FastQueue[i]);
-                    }
-                    for(int i=0;i<server.TrickleChargingPileNum;i++)
-                    {
-                        System.out.print("慢充"+i+":");
-                        System.out.println(server.SlowQueue[i]);
-                    }
 
-
-                    if(WaitQueue.size()>0) {
-                        System.out.print("等候区:");
-                        System.out.println(WaitQueue + " ");
-                    }
-                    if(ErrorQueue.size()>0)
-                    {
-                        System.out.print("差错区:");
-                        System.out.println(ErrorQueue);
-                    }
-                }
             }
         } catch (InterruptedException e) {
             e.printStackTrace();
