@@ -369,11 +369,10 @@ public class server implements Runnable{
                             {
                                 if(SlowQueue[i].size()<ChargingQueueLen&&SlowPiles.get(i).status==1)//看是否有充电桩是工作状态并且是空闲的
                                 {
-                                    System.out.println();
-                                    flag1=true;
+
                                     if(SlowPiles.get(i).status!=0)//假如有充电桩处于运行状态
                                     {
-                                        flag=true;
+                                        flag1=true;
 
                                     }
 
