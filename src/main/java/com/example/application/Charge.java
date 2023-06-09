@@ -38,16 +38,18 @@ public class Charge {
         String json="";
         //判断是否在充电
         if(response !=null){
-            if(mybill==null){
+            if(mybill!=null){
                 if(response.fast)
                 {
                     response.currentFee=function.CountFee(Double.parseDouble(mybill.chargeStartTime),server.time,true);
                     response.currentAmount=30*(server.time-Double.parseDouble(mybill.chargeStartTime))/3600;
+                    response.currentFee= response.currentFee+0.8*response.currentAmount;
                 }
                 else
                 {
                     response.currentFee=function.CountFee(Double.parseDouble(mybill.chargeStartTime),server.time,false);
                     response.currentAmount=7*(server.time-Double.parseDouble(mybill.chargeStartTime))/3600;
+                    response.currentFee= response.currentFee+0.8*response.currentAmount;
                 }
                 DecimalFormat df=new DecimalFormat("0.00");
                 response.currentFee=Double.valueOf(df.format(response.currentFee));
@@ -368,7 +370,7 @@ public class Charge {
                 result.chargeEndTime=String.valueOf(time-1);
                 result.created_at =result.chargeStartTime;
                 if(UserChargeStatus.get(myuser.id).fast) result.chargeAmount=30*(Double.valueOf(result.chargeEndTime)-Double.valueOf(result.chargeStartTime))/3600;
-                else result.chargeAmount=15*(Double.valueOf(result.chargeEndTime)-Double.valueOf(result.chargeStartTime))/3600;
+                else result.chargeAmount=7*(Double.valueOf(result.chargeEndTime)-Double.valueOf(result.chargeStartTime))/3600;
                 result.serviceFee=0.8*result.chargeAmount;
                 result.chargeFee=CountFee(Double.valueOf(result.chargeStartTime),Double.valueOf(result.chargeEndTime),UserChargeStatus.get(myuser.id).fast);
                 DecimalFormat df=new DecimalFormat("0.00");

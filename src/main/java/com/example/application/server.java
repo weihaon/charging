@@ -110,12 +110,17 @@ public class server implements Runnable{
 
     }
     public static void main(String[] args) throws InterruptedException {
-        //获得当前时间
-        LocalDateTime currentDateTime = LocalDateTime.now();
+        LocalDateTime currentDateTime = LocalDateTime.now()
+                .withHour(21)
+                .withMinute(30)
+                .withSecond(0)
+                .withNano(0);
+
+
         //准确到秒
-        modifiedDateTime = currentDateTime.withNano(0);
+        modifiedDateTime = currentDateTime.minusDays(1);
         // 把currentDateTime转化为时间戳,毫秒为单位
-        stamp = System.currentTimeMillis();
+        stamp = modifiedDateTime.toInstant(ZoneOffset.UTC).toEpochMilli();
 
         System.out.println("当前时间戳为：" + stamp);
 
@@ -315,7 +320,9 @@ public class server implements Runnable{
                                                 amount+=chargeRequests.get(FastQueue[i].get(j)).amount;//当前一共要冲的电量
                                             }
                                             //总时间=等待时间（总的充电时间-当前已经充电的时间）+自己需要的充电时间
-                                            int temp=(int)(60*amount/30+TimeUser.get(FastQueue[i].get(0))-server.time+60*chargeRequests.get(ErrorQueue.get(0)).amount/30);
+                                            ChargeBill bill=new ChargeBill();
+                                            bill=databaseAccess.billReadByUserId(FastQueue[i].get(0));
+                                            int temp=(int)(3600*amount/30+Integer.parseInt(bill.chargeStartTime)-server.time);
                                             if(temp<min)
                                             {
                                                 min=temp;
@@ -444,7 +451,10 @@ public class server implements Runnable{
                                                 amount+=chargeRequests.get(SlowQueue[i].get(j)).amount;//当前一共要冲的电量
                                             }
                                             //总时间=等待时间（总的充电时间-当前已经充电的时间）+自己需要的充电时间
-                                            int temp=(int)(60*amount/7+TimeUser.get(SlowQueue[i].get(0))-server.time+60*chargeRequests.get(ErrorQueue.get(0)).amount/7);
+                                            //总时间=等待时间（总的充电时间-当前已经充电的时间）+自己需要的充电时间
+                                            ChargeBill bill=new ChargeBill();
+                                            bill=databaseAccess.billReadByUserId(SlowQueue[i].get(0));
+                                            int temp=(int)(3600*amount/7+Integer.parseInt(bill.chargeStartTime)-server.time);
                                             if(temp<min)
                                             {
                                                 min=temp;
@@ -667,9 +677,14 @@ public class server implements Runnable{
                                             for(int j=0;j<FastQueue[i].size();j++)
                                             {
                                                 amount+=chargeRequests.get(FastQueue[i].get(j)).amount;//当前一共要冲的电量
+                                                System.out.println(i+"amount:"+amount);
                                             }
                                             //总时间=等待时间（总的充电时间-当前已经充电的时间）+自己需要的充电时间
-                                            int temp=(int)(60*amount/30+TimeUser.get(FastQueue[i].get(0))-server.time+60*chargeRequests.get(event.get(0).usrid).amount/30);
+                                            //总时间=等待时间（总的充电时间-当前已经充电的时间）+自己需要的充电时间
+                                            ChargeBill bill=new ChargeBill();
+                                            bill=databaseAccess.billReadByUserId(FastQueue[i].get(0));
+                                            int temp=(int)(3600*amount/30+Integer.parseInt(bill.chargeStartTime)-server.time);
+                                            System.out.println(i+"temp:"+temp);
                                             if(temp<min)
                                             {
                                                 min=temp;
@@ -789,7 +804,9 @@ public class server implements Runnable{
                                                 amount+=chargeRequests.get(SlowQueue[i].get(j)).amount;//当前一共要冲的电量
                                             }
                                             //总时间=等待时间（总的充电时间-当前已经充电的时间）+自己需要的充电时间
-                                            int temp=(int)(60*amount/7+TimeUser.get(SlowQueue[i].get(0))-server.time+60*chargeRequests.get(event.get(0).usrid).amount/7);
+                                            ChargeBill bill=new ChargeBill();
+                                            bill=databaseAccess.billReadByUserId(SlowQueue[i].get(0));
+                                            int temp=(int)(3600*amount/7+Integer.parseInt(bill.chargeStartTime)-server.time);
                                             if(temp<min)
                                             {
                                                 min=temp;
@@ -871,7 +888,7 @@ class info implements Runnable{
     }
 }
 class Time implements Runnable {
-    int ms=50;//每多少毫秒模拟一秒
+    int ms=10;//每多少毫秒模拟一秒
 
     @Override
     public void run() {

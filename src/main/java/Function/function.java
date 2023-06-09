@@ -304,50 +304,55 @@ public class function {
         double countfee;
         if(fast) dayFee=504;
         else dayFee=117.6;
+        starttime=starttime+390*60;
+        endtime=endtime+390*60;
+
         int days=(int)(endtime-starttime)/86400;
         double fee1=days*dayFee;
         double fee2=0;
         endtime-=days*86400;
+
         for(double i=starttime;Double.compare(i,endtime)<0;i++)
         {
-            if(Double.compare(i,420.0)<0)
+            if(Double.compare(i,420.0*60)<0)
             {
                 if (fast) fee2+=0.2;
-                else fee2+=Double.valueOf(df.format(0.4*7/60));
-            }
-            else if(Double.compare(i,600.0)<0)
+                else fee2+=Double.valueOf((0.4*(double)7/(double)60));
+        }
+            else if(Double.compare(i,600.0*60)<0)
             {
                 if (fast) fee2+=0.35;
-                else fee2+=Double.valueOf(df.format(0.7*7/60));
+                else fee2+=Double.valueOf((0.7*(double)7/(double)60));
             }
-            else if (Double.compare(i,900.0)<0)
+            else if (Double.compare(i,900.0*60)<0)
             {
                 if (fast) fee2+=0.5;
-                else fee2+=Double.valueOf(df.format(1.0*7/60));
+                else fee2+=Double.valueOf((1.0*(double)7/(double)60));
             }
-            else if(Double.compare(i,1080.0)<0)
+            else if(Double.compare(i,1080.0*60)<0)
             {
                 if (fast) fee2+=0.35;
-                else fee2+=Double.valueOf(df.format(0.7*7/60));
+                else fee2+=Double.valueOf((0.7*(double)7/(double)60));
             }
-            else if(Double.compare(i,1260.0)<0)
+            else if(Double.compare(i,1260.0*60)<0)
             {
                 if (fast) fee2+=0.5;
-                else fee2+=Double.valueOf(df.format(1.0*7/60));
+                else fee2+=Double.valueOf((1.0*(double)7/(double)60));
             }
-            else if(Double.compare(i,1380.0)<0)
+            else if(Double.compare(i,1380.0*60)<0)
             {
                 if (fast) fee2+=0.35;
-                else fee2+=Double.valueOf(df.format(0.7*7/60));
+                else fee2+=Double.valueOf((0.7*(double)7/(double)60));
             }
             else {
                 if (fast) fee2+=0.2;
-                else fee2+=Double.valueOf(df.format(0.4*7/60));
+                else fee2+=Double.valueOf((0.4*(double)7/(double)60));
             }
         }
         fee2=fee2/60.0;
         return fee1+fee2;
     }
+
 
     //时间转化函数
     public static String GetDate(int time)
